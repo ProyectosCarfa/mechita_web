@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Categorías - Admin Mechita</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+
+<div th:replace="~{fragments/navbar :: topbar}"></div>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<section class="admin-page-header">
+    <div class="container">
+        <div class="admin-breadcrumb">
+            <a th:href="@{/admin}"><i class="bi bi-house-door"></i> Panel</a>
+            <i class="bi bi-chevron-right"></i>
+            <span>Categorías</span>
+        </div>
+        <div class="admin-page-title">
+            <div>
+                <span class="admin-tag">ADMINISTRACIÓN</span>
+                <h1>Gestión de Categorías</h1>
+                <p>Organiza las categorías del catálogo</p>
+            </div>
+            <div class="admin-page-actions">
+                <a th:href="@{/admin/categorias/nuevo}" class="btn-admin-primary">
+                    <i class="bi bi-plus-circle"></i> Nueva Categoría
+                </a>
+                <a th:href="@{/admin}" class="btn-admin-back">
+                    <i class="bi bi-arrow-left"></i> Volver
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="admin-toolbar-section">
+    <div class="container">
+
+        <div class="admin-mini-stats">
+            <div class="mini-stat">
+                <i class="bi bi-tags-fill"></i>
+                <div>
+                    <span class="mini-label">Total</span>
+                    <span class="mini-value" th:text="${total}">0</span>
+                </div>
+            </div>
+            <div class="mini-stat success">
+                <i class="bi bi-check-circle-fill"></i>
+                <div>
+                    <span class="mini-label">Activas</span>
+                    <span class="mini-value" th:text="${activas}">0</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="admin-toolbar">
+            <div class="admin-filters">
+                <a th:href="@{/admin/categorias}"
+                   th:classappend="${filtroActual == null ? 'active' : ''}"
+                   class="filter-btn">Todas</a>
+                <a th:href="@{/admin/categorias(filtro='activas')}"
+                   th:classappend="${filtroActual == 'activas' ? 'active' : ''}"
+                   class="filter-btn">Activas</a>
+                <a th:href="@{/admin/categorias(filtro='inactivas')}"
+                   th:classappend="${filtroActual == 'inactivas' ? 'active' : ''}"
+                   class="filter-btn">Inactivas</a>
+            </div>
+
+            <form class="admin-search" th:action="@{/admin/categorias}" method="get">
+                <i class="bi bi-search"></i>
+                <input type="search" name="q" placeholder="Buscar categoría..."
+                       th:value="${busqueda}">
+                <button type="submit">Buscar</button>
+            </form>
+        </div>
+
+    </div>
+</section>
+
+<section class="admin-table-section">
+    <div class="container">
+
+        <div th:if="${categorias == null or categorias.isEmpty()}" class="admin-empty">
+            <i class="bi bi-tag"></i>
+            <h3>No hay categorías</h3>
+            <p>Crea tu primera categoría para organizar tus productos.</p>
+            <a th:href="@{/admin/categorias/nuevo}" class="btn-admin-primary" style="margin-top: 1rem;">
+                <i class="bi bi-plus-circle"></i> Crear categoría
+            </a>
+        </div>
+
+        <div th:if="${categorias != null and !categorias.isEmpty()}" class="admin-table-wrapper">
+            <table class="admin-table">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Descripción</th>
+                    <th>Estado</th>
+                    <th class="text-end">Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="c : ${categorias}">
+                    <td>
+                        <span class="id-badge" th:text="'#' + ${c.idCategoria}">#1</span>
+                    </td>
+                    <td>
+                        <div class="cat-cell">
+                            <div class="cat-icon">
+                                <img th:if="${c.imagenUrl != null and !c.imagenUrl.isEmpty()}"
+                                     th:src="${c.imagenUrl}"
+                                     th:alt="${c.nombre}"
+                                     style="width:100%; height:100%; object-fit: cover; border-radius: 10px;">
+                                <i th:if="${c.imagenUrl == null or c.imagenUrl.isEmpty()}"
+                                   class="bi bi-tag-fill"></i>
+                            </div>
+                            <span class="cat-name" th:text="${c.nombre}">Nombre</span>
+                        </div>
+                    </td>
+                    <td>
+                            <span class="cat-desc"
+                                  th:text="${c.descripcion != null and !c.descripcion.isEmpty() ? c.descripcion : 'Sin descripción'}">
+                                Descripción
+                            </span>
+                    </td>
+                    <td>
+                            <span class="status-badge"
+                                  th:classappend="${c.activo} ? 'status-active' : 'status-inactive'">
+                                <i th:class="${c.activo ? 'bi bi-check-circle-fill' : 'bi bi-x-circle-fill'}"></i>
+                                <span th:text="${c.activo ? 'Activa' : 'Inactiva'}">Activa</span>
+                            </span>
+                    </td>
+                    <td class="text-end">
+                        <div class="action-buttons">
+                            <a th:href="@{/admin/categorias/editar/{id}(id=${c.idCategoria})}"
+                               class="btn-action btn-edit" title="Editar">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <a th:href="@{/admin/categorias/estado/{id}(id=${c.idCategoria})}"
+                               class="btn-action btn-toggle"
+                               th:title="${c.activo ? 'Desactivar' : 'Activar'}">
+                                <i th:class="${c.activo ? 'bi bi-toggle-on' : 'bi bi-toggle-off'}"></i>
+                            </a>
+                            <a th:href="@{/admin/categorias/eliminar/{id}(id=${c.idCategoria})}"
+                               class="btn-action btn-delete"
+                               onclick="return confirm('¿Seguro que quieres eliminar esta categoría? Si tiene productos asociados, fallará.');"
+                               title="Eliminar">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</section>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<footer th:fragment="footer" class="footer-mechita">
+  <div class="container">
+    <div class="row gy-4">
+
+      <div class="col-lg-4 col-md-6">
+        <a class="footer-brand" th:href="@{/}">
+          <img th:src="@{/assets/img/logo.png}" alt="Piuranos Mechita" class="logo-img">
+          <div class="brand-info">
+            <span class="brand-line-1">Productos Piuranos</span>
+            <span class="brand-line-2">MECHITA E.I.R.L</span>
+            <span class="brand-line-3">Tradición que se comparte</span>
+          </div>
+        </a>
+        <p class="footer-description">
+          Empresa dedicada a la comercialización de productos típicos de la región Piura.
+          Llevamos lo mejor de nuestra tierra a tu mesa.
+        </p>
+        <div class="social-icons">
+          <a href="https://facebook.com" target="_blank" class="social-icon" aria-label="Facebook">
+            <i class="bi bi-facebook"></i>
+          </a>
+          <a href="https://instagram.com" target="_blank" class="social-icon" aria-label="Instagram">
+            <i class="bi bi-instagram"></i>
+          </a>
+          <a href="https://tiktok.com" target="_blank" class="social-icon" aria-label="TikTok">
+            <i class="bi bi-tiktok"></i>
+          </a>
+          <a href="https://wa.me/51987654321" target="_blank" class="social-icon" aria-label="WhatsApp">
+            <i class="bi bi-whatsapp"></i>
+          </a>
+        </div>
+      </div>
+
+      <div class="col-lg-2 col-md-6">
+        <h5 class="footer-title">Enlaces</h5>
+        <ul class="footer-links">
+          <li><a th:href="@{/}"><i class="bi bi-chevron-right"></i> Inicio</a></li>
+          <li><a th:href="@{/productos}"><i class="bi bi-chevron-right"></i> Productos</a></li>
+          <li><a th:href="@{/nosotros}"><i class="bi bi-chevron-right"></i> Nosotros</a></li>
+          <li><a th:href="@{/contacto}"><i class="bi bi-chevron-right"></i> Contacto</a></li>
+        </ul>
+      </div>
+
+      <div class="col-lg-3 col-md-6">
+        <h5 class="footer-title">Contacto</h5>
+        <ul class="footer-links">
+          <li><i class="bi bi-geo-alt-fill"></i> Av. Sánchez Cerro 123, Piura, Perú</li>
+          <li><i class="bi bi-telephone-fill"></i> +51 987 654 321</li>
+          <li><i class="bi bi-envelope-fill"></i> ventas@piuranosmechita.pe</li>
+          <li><i class="bi bi-clock-fill"></i> Lun - Sáb: 8:00 am - 8:00 pm</li>
+        </ul>
+      </div>
+
+      <div class="col-lg-3 col-md-6">
+        <h5 class="footer-title">Métodos de Pago</h5>
+        <p class="footer-description">
+          Aceptamos tarjetas, transferencias y pagos en efectivo.
+        </p>
+        <div class="footer-links">
+          <li><i class="bi bi-credit-card-2-front"></i> Tarjetas de crédito/débito</li>
+          <li><i class="bi bi-bank"></i> Transferencia bancaria</li>
+          <li><i class="bi bi-phone"></i> Yape / Plin</li>
+          <li><i class="bi bi-cash-coin"></i> Pago en efectivo</li>
+        </div>
+      </div>
+
+    </div>
+
+    <hr class="footer-divider">
+
+    <div class="footer-bottom">
+      <p class="footer-copy">
+        &copy; 2026 <strong>Productos Piuranos Mechita E.I.R.L.</strong> - Todos los derechos reservados.
+      </p>
+      <p class="footer-legal">
+        <a href="#">Términos y condiciones</a>
+        <span class="separator">|</span>
+        <a href="#">Política de privacidad</a>
+      </p>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

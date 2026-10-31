@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nosotros - Piuranos Mechita</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body class="nosotros-page">
+
+<div th:replace="~{fragments/navbar :: topbar}"></div>
+
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<section class="nosotros-hero"
+         style="background-image: url('https://images.unsplash.com/photo-1587574293340-e0011c4e8ecf?w=1600&q=80');">
+    <div class="nosotros-hero-content">
+        <span class="hero-tag">SOBRE NOSOTROS</span>
+        <h1>Tradición que se comparte</h1>
+        <p>
+            Somos una empresa piurana dedicada a llevar lo mejor de nuestra tierra
+            a cada rincón del Perú, con productos auténticos y de la más alta calidad.
+        </p>
+    </div>
+</section>
+
+<section class="nosotros-section">
+    <div class="container">
+        <div class="nosotros-grid">
+
+            <div class="nosotros-img" data-reveal>
+                <img src="https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=800&q=80" alt="Historia Mechita">
+                <div class="nosotros-img-badge">
+                    <div class="nosotros-img-badge-icon">
+                        <i class="bi bi-award-fill"></i>
+                    </div>
+                    <div class="nosotros-img-badge-text">
+                        <strong>+15 años</strong>
+                        <span>de tradición piurana</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="nosotros-text" data-reveal>
+                <span class="section-tag">NUESTRA HISTORIA</span>
+                <h2>Un legado familiar que endulza paladares</h2>
+                <p>
+                    Productos Piuranos Mechita E.I.R.L. nació del sueño de una familia
+                    piurana por compartir los sabores auténticos de su tierra. Lo que
+                    empezó como un pequeño emprendimiento familiar, hoy es una empresa
+                    comprometida con llevar lo mejor de Piura a todo el país.
+                </p>
+                <p>
+                    Cada producto que elaboramos lleva consigo la esencia de nuestras
+                    tradiciones, el cariño de nuestras manos y el compromiso con la
+                    calidad que nos caracteriza.
+                </p>
+
+                <ul class="nosotros-features">
+                    <li><i class="bi bi-check-circle-fill"></i> Recetas tradicionales</li>
+                    <li><i class="bi bi-check-circle-fill"></i> Productos naturales</li>
+                    <li><i class="bi bi-check-circle-fill"></i> Elaboración artesanal</li>
+                    <li><i class="bi bi-check-circle-fill"></i> Calidad garantizada</li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<section class="mvv-section">
+    <div class="container">
+
+        <div class="text-center mb-5" data-reveal>
+            <span class="section-tag" style="display:inline-block;">NUESTRO PROPÓSITO</span>
+            <h2 class="section-title-left" style="display:block;">Lo que nos mueve cada día</h2>
+        </div>
+
+        <div class="mvv-grid">
+
+            <div class="mvv-card" data-reveal>
+                <div class="mvv-icon">
+                    <i class="bi bi-bullseye"></i>
+                </div>
+                <h3 class="mvv-title">Misión</h3>
+                <p class="mvv-text">
+                    Ofrecer productos típicos piuranos de la más alta calidad,
+                    elaborados con recetas tradicionales y materia prima seleccionada,
+                    satisfaciendo los paladares más exigentes y contribuyendo al
+                    desarrollo de nuestra región.
+                </p>
+            </div>
+
+            <div class="mvv-card" data-reveal>
+                <div class="mvv-icon">
+                    <i class="bi bi-eye-fill"></i>
+                </div>
+                <h3 class="mvv-title">Visión</h3>
+                <p class="mvv-text">
+                    Ser reconocidos a nivel nacional como la empresa líder en la
+                    comercialización de productos piuranos, destacando por nuestra
+                    calidad, tradición e innovación, llevando el sabor de Piura a
+                    cada hogar peruano.
+                </p>
+            </div>
+
+            <div class="mvv-card" data-reveal>
+                <div class="mvv-icon">
+                    <i class="bi bi-heart-fill"></i>
+                </div>
+                <h3 class="mvv-title">Valores</h3>
+                <p class="mvv-text">
+                    Nos guiamos por la tradición, la calidad, el compromiso con
+                    nuestros clientes, el respeto por nuestras raíces y el amor
+                    por compartir lo mejor de nuestra tierra con el mundo.
+                </p>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<section class="valores-section">
+    <div class="container">
+
+        <div class="text-center mb-5" data-reveal>
+            <span class="section-tag" style="display:inline-block;">NUESTROS VALORES</span>
+            <h2 class="section-title-left" style="display:block;">Los principios que nos definen</h2>
+        </div>
+
+        <div class="valores-grid">
+
+            <div class="valor-card" data-reveal>
+                <div class="valor-icon"><i class="bi bi-award"></i></div>
+                <h4 class="valor-title">Calidad</h4>
+                <p class="valor-text">
+                    Seleccionamos los mejores ingredientes para ofrecer productos
+                    excepcionales.
+                </p>
+            </div>
+
+            <div class="valor-card" data-reveal>
+                <div class="valor-icon"><i class="bi bi-people-fill"></i></div>
+                <h4 class="valor-title">Tradición</h4>
+                <p class="valor-text">
+                    Mantenemos vivas las recetas ancestrales de nuestra región Piura.
+                </p>
+            </div>
+
+            <div class="valor-card" data-reveal>
+                <div class="valor-icon"><i class="bi bi-hand-thumbs-up-fill"></i></div>
+                <h4 class="valor-title">Compromiso</h4>
+                <p class="valor-text">
+                    Cumplimos lo que prometemos y superamos las expectativas de
+                    nuestros clientes.
+                </p>
+            </div>
+
+            <div class="valor-card" data-reveal>
+                <div class="valor-icon"><i class="bi bi-tree-fill"></i></div>
+                <h4 class="valor-title">Sostenibilidad</h4>
+                <p class="valor-text">
+                    Trabajamos de manera responsable con el medio ambiente y nuestra
+                    comunidad.
+                </p>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<section class="nosotros-cta">
+    <div class="container" data-reveal>
+        <h2>¿Listo para probar lo mejor de Piura?</h2>
+        <p>Descubre nuestra variedad de productos y déjate sorprender por los sabores de nuestra tierra.</p>
+        <a th:href="@{/productos}" class="btn-cta-white">
+            <i class="bi bi-bag"></i> Ver productos
+        </a>
+    </div>
+</section>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>

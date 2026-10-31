@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Categorías - Piuranos Mechita</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+
+<div th:replace="~{fragments/navbar :: topbar}"></div>
+
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<main class="categorias-page" style="margin-top: calc(var(--topbar-height) + var(--navbar-height));">
+    <div class="container">
+
+        <nav class="breadcrumb-mechita" aria-label="breadcrumb">
+            <a th:href="@{/}"><i class="bi bi-house-door"></i> Inicio</a>
+            <i class="bi bi-chevron-right"></i>
+            <span class="current">Categorías</span>
+        </nav>
+
+        <div class="page-header">
+            <h1>Nuestras Categorías</h1>
+            <p>Explora nuestra variedad de productos típicos piuranos</p>
+        </div>
+
+        <div th:if="${categorias != null and !categorias.isEmpty()}" class="categorias-grid">
+
+            <a th:each="c : ${categorias}"
+               th:href="@{/productos(cat=${c.idCategoria})}"
+               class="categoria-card"
+               data-reveal>
+
+                <div class="categoria-img">
+                    <img th:if="${c.imagenUrl != null and !c.imagenUrl.isEmpty()}"
+                         th:src="${c.imagenUrl}"
+                         th:alt="${c.nombre}">
+                    <div th:if="${c.imagenUrl == null or c.imagenUrl.isEmpty()}"
+                         class="categoria-img-placeholder"
+                         style="background: linear-gradient(135deg, var(--mechita-brown) 0%, var(--mechita-brown-dark) 100%);">
+                        <i class="bi bi-tag-fill"></i>
+                    </div>
+                </div>
+
+                <div class="categoria-body">
+                    <div class="categoria-icon-circle">
+                        <i class="bi bi-basket2-fill"></i>
+                    </div>
+
+                    <h3 class="categoria-name" th:text="${c.nombre}">Categoría</h3>
+
+                    <p class="categoria-desc"
+                       th:text="${c.descripcion != null and !c.descripcion.isEmpty() ? c.descripcion : 'Descubre todos nuestros productos en esta categoría.'}">
+                        Descripción de la categoría
+                    </p>
+
+                    <div class="categoria-footer">
+                        <span class="categoria-count">
+                            <i class="bi bi-box"></i>
+                            <span th:text="${productoService.contarPorCategoria(c.idCategoria)}">0</span>
+                            <span th:text="${productoService.contarPorCategoria(c.idCategoria) == 1 ? 'producto' : 'productos'}">
+                                productos
+                            </span>
+                        </span>
+                        <span class="categoria-arrow">
+                            Ver más <i class="bi bi-arrow-right"></i>
+                        </span>
+                    </div>
+                </div>
+            </a>
+
+            <a th:href="@{/productos}" class="categoria-card" data-reveal>
+                <div class="categoria-img">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTt4zrEVY6FlIdR6f3u1kmATk6vOSAcB2U6ChZBSmwnJQlK5ajLlsGzKwA&s=10"
+                         alt="Todos los productos">
+                </div>
+                <div class="categoria-body">
+                    <div class="categoria-icon-circle">
+                        <i class="bi bi-grid-3x3-gap-fill"></i>
+                    </div>
+                    <h3 class="categoria-name">Ver Todo</h3>
+                    <p class="categoria-desc">
+                        Descubre todos nuestros productos piuranos en un solo lugar.
+                        ¡Encuentra tu favorito!
+                    </p>
+                    <div class="categoria-footer">
+                        <span class="categoria-count">
+                            <i class="bi bi-box"></i> Todos
+                        </span>
+                        <span class="categoria-arrow">
+                            Ver más <i class="bi bi-arrow-right"></i>
+                        </span>
+                    </div>
+                </div>
+            </a>
+
+        </div>
+
+        <div th:if="${categorias == null or categorias.isEmpty()}" class="empty-state" data-reveal>
+            <div class="empty-state-icon">
+                <i class="bi bi-emoji-frown"></i>
+            </div>
+            <div class="empty-state-bag">
+                <i class="bi bi-bag-x"></i>
+            </div>
+            <h3 class="empty-state-title">Aún no hay categorías</h3>
+            <p class="empty-state-text">
+                Estamos organizando nuestro catálogo. Vuelve pronto para descubrir
+                todas las categorías de productos piuranos.
+            </p>
+        </div>
+
+    </div>
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>
