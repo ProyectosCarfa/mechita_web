@@ -19,4 +19,8 @@ public class MetodoPago {
     @Size(max = 40)
     @Column(name = "nombre", nullable = false, unique = true, length = 40)
     private String nombre;
+
+    @Size(max = 255, message = "La URL de la imagen no debe superar los 255 caracteres")
+    @Column(name = "imagen_url", length = 255)
+    private String imagenUrl;
 }

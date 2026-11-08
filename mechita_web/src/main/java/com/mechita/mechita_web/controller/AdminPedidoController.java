@@ -4,6 +4,7 @@ import com.mechita.mechita_web.exception.RecursoNoEncontradoException;
 import com.mechita.mechita_web.exception.ReglaNegocioException;
 import com.mechita.mechita_web.model.Usuario;
 import com.mechita.mechita_web.repository.EstadoPedidoRepository;
+import com.mechita.mechita_web.repository.MetodoPagoRepository;
 import com.mechita.mechita_web.service.PagoService;
 import com.mechita.mechita_web.service.PedidoService;
 import jakarta.servlet.http.HttpSession;
@@ -24,6 +25,7 @@ public class AdminPedidoController {
     private final PedidoService pedidoService;
     private final PagoService pagoService;
     private final EstadoPedidoRepository estadoRepository;
+    private final MetodoPagoRepository metodoPagoRepository; // <-- Agregado
 
     private boolean esAdmin(HttpSession session) {
         Usuario usuario = (Usuario) session.getAttribute("usuarioLogueado");
@@ -59,6 +61,7 @@ public class AdminPedidoController {
         if (!esAdmin(session)) return "redirect:/login";
         model.addAttribute("pagos", pagoService.listar());
         model.addAttribute("totalRecaudado", pagoService.totalRecaudado());
+        model.addAttribute("metodosPago", metodoPagoRepository.findAll()); // <-- Agregado
         return "roles/pagos";
     }
 }

@@ -4,47 +4,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Productos - Piuranos Mechita</title>
-
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 <body>
-
 <div th:replace="~{fragments/navbar :: topbar}"></div>
-
 <div th:replace="~{fragments/navbar :: navbar}"></div>
-
 <main class="products-page" style="margin-top: calc(var(--topbar-height) + var(--navbar-height));">
     <div class="container">
-
         <nav class="breadcrumb-mechita" aria-label="breadcrumb">
             <a th:href="@{/}"><i class="bi bi-house-door"></i> Inicio</a>
             <i class="bi bi-chevron-right"></i>
             <span class="current">Productos</span>
         </nav>
-
         <div class="page-header">
             <h1>Nuestros Productos</h1>
             <p>Descubre todos los sabores de nuestra tierra piurana</p>
         </div>
-
         <div class="products-layout">
-
             <aside class="filters-sidebar" id="filtersSidebar">
-
                 <button class="filters-close-mobile" id="closeFilters" aria-label="Cerrar filtros">
                     <i class="bi bi-x-lg"></i>
                 </button>
-
                 <div class="filters-header">
                     <h3><i class="bi bi-funnel-fill"></i> Filtros</h3>
                     <a th:href="@{/productos}" class="filters-clear" style="text-decoration: none;">Limpiar todo</a>
                 </div>
-
                 <div class="filter-group">
                     <div class="filter-group-title" data-toggle="group-categorias">
                         Categorías <i class="bi bi-chevron-down"></i>
@@ -63,7 +50,6 @@
                         </a>
                     </div>
                 </div>
-
                 <div class="filter-group">
                     <div class="filter-group-title" data-toggle="group-precio">
                         Precio <i class="bi bi-chevron-down"></i>
@@ -84,7 +70,6 @@
                         </form>
                     </div>
                 </div>
-
                 <div class="filter-group">
                     <div class="filter-group-title" data-toggle="group-disponibilidad">
                         Disponibilidad <i class="bi bi-chevron-down"></i>
@@ -104,21 +89,15 @@
                         </label>
                     </div>
                 </div>
-
             </aside>
-
             <section class="products-content">
-
                 <div class="products-toolbar">
-
                     <button class="btn-open-filters" id="openFilters">
                         <i class="bi bi-funnel"></i> Filtros
                     </button>
-
-                    <div class="products-count">
-                        Mostrando <strong th:text="${totalProductos}">0</strong> productos
+                    <div class="products-count" id="productsCount">
+                        Mostrando <strong>0</strong> productos
                     </div>
-
                     <div class="toolbar-actions">
                         <div class="toolbar-select">
                             <label for="sortBy">Ordenar por:</label>
@@ -131,7 +110,6 @@
                                 <option value="nombre-desc">Nombre (Z-A)</option>
                             </select>
                         </div>
-
                         <div class="view-toggle">
                             <button class="view-btn active" data-view="grid" aria-label="Vista cuadrícula">
                                 <i class="bi bi-grid-3x3-gap-fill"></i>
@@ -142,78 +120,215 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="active-filters" id="activeFilters" style="display: none;">
                     <!-- Se llenan con JS -->
                 </div>
-                <div th:if="${productos != null and !productos.isEmpty()}"
-                     class="products-grid-page" id="productsGrid">
 
-                    <div th:each="p : ${productos}" class="product-card">
-                        <div class="product-img">
-                            <img th:if="${p.imagenUrl != null and !p.imagenUrl.isEmpty()}"
-                                 th:src="${p.imagenUrl}"
-                                 th:alt="${p.nombre}">
-                            <div th:if="${p.imagenUrl == null or p.imagenUrl.isEmpty()}"
-                                 class="product-img-placeholder">
-                                <i class="bi bi-image"></i>
-                            </div>
-                        </div>
-                        <div class="product-body">
-                            <span class="product-category-badge"
-                                  th:if="${p.categoria != null}"
-                                  th:text="${p.categoria.nombre}">Categoría</span>
-                            <h3 class="product-name" th:text="${p.nombre}">Nombre</h3>
-                            <p class="product-desc"
-                               th:if="${p.descripcion != null and !p.descripcion.isEmpty()}"
-                               th:text="${p.descripcion}">
-                                Descripción
-                            </p>
-                            <div class="product-price">
-                                <span th:text="'S/ ' + ${#numbers.formatDecimal(p.precio, 1, 2)}">S/ 0.00</span>
-                            </div>
-                            <form th:action="@{/carrito/agregar}" method="post">
-                                <input type="hidden" name="idProducto" th:value="${p.idProducto}">
-                                <input type="hidden" name="cantidad" value="1">
-                                <button class="btn-add-cart" type="submit" th:disabled="${p.stock <= 0}">
-                                    <i class="bi bi-cart-plus"></i> <span th:text="${p.stock > 0 ? 'Agregar al carrito' : 'Sin stock'}">Agregar al carrito</span>
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-
+                <div id="skeletonLoader" class="products-grid-page">
+                    <div class="product-card skeleton-card"><div class="product-img skeleton-box"></div><div class="product-body"><div class="skeleton-text skeleton-title"></div><div class="skeleton-text skeleton-price"></div><div class="skeleton-button"></div></div></div>
+                    <div class="product-card skeleton-card"><div class="product-img skeleton-box"></div><div class="product-body"><div class="skeleton-text skeleton-title"></div><div class="skeleton-text skeleton-price"></div><div class="skeleton-button"></div></div></div>
+                    <div class="product-card skeleton-card"><div class="product-img skeleton-box"></div><div class="product-body"><div class="skeleton-text skeleton-title"></div><div class="skeleton-text skeleton-price"></div><div class="skeleton-button"></div></div></div>
+                    <div class="product-card skeleton-card"><div class="product-img skeleton-box"></div><div class="product-body"><div class="skeleton-text skeleton-title"></div><div class="skeleton-text skeleton-price"></div><div class="skeleton-button"></div></div></div>
+                    <div class="product-card skeleton-card"><div class="product-img skeleton-box"></div><div class="product-body"><div class="skeleton-text skeleton-title"></div><div class="skeleton-text skeleton-price"></div><div class="skeleton-button"></div></div></div>
+                    <div class="product-card skeleton-card"><div class="product-img skeleton-box"></div><div class="product-body"><div class="skeleton-text skeleton-title"></div><div class="skeleton-text skeleton-price"></div><div class="skeleton-button"></div></div></div>
                 </div>
 
-                <div th:if="${productos == null or productos.isEmpty()}"
-                     class="empty-state" data-reveal>
-                    <div class="empty-state-icon">
-                        <i class="bi bi-emoji-frown"></i>
-                    </div>
-                    <div class="empty-state-bag">
-                        <i class="bi bi-bag-x"></i>
-                    </div>
+                <div id="productsGrid" class="products-grid-page" style="display: none;"></div>
+
+                <div id="emptyState" class="empty-state" style="display: none;">
+                    <div class="empty-state-icon"><i class="bi bi-emoji-frown"></i></div>
+                    <div class="empty-state-bag"><i class="bi bi-bag-x"></i></div>
                     <h3 class="empty-state-title">No hay productos disponibles</h3>
-                    <p class="empty-state-text">
-                        Aún no tenemos productos registrados en nuestro catálogo.
-                        Vuelve pronto para descubrir todos los sabores de Piura.
-                    </p>
+                    <p class="empty-state-text">Aún no tenemos productos registrados en nuestro catálogo.</p>
                 </div>
 
+                <div id="paginationContainer" class="pagination-container mt-5" style="display: none;">
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination justify-content-center" id="paginationList"></ul>
+                    </nav>
+                </div>
             </section>
-
         </div>
-
     </div>
 </main>
 
 <div class="filters-overlay" id="filtersOverlay"></div>
-
 <div th:replace="~{fragments/footer :: footer}"></div>
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/nav-active.js}"></script>
 <script th:src="@{/js/app.js}"></script>
-<script>
+<script th:inline="javascript">
+    // ⭐ VARIABLE DE SESIÓN DESDE THYMELEAF ⭐
+    const usuarioLogueado = /*[[${session.usuarioLogueado != null}]]*/ false;
+
     document.addEventListener('DOMContentLoaded', function () {
+        const skeleton = document.getElementById('skeletonLoader');
+        const grid = document.getElementById('productsGrid');
+        const emptyState = document.getElementById('emptyState');
+        const productsCount = document.getElementById('productsCount');
+        const paginationContainer = document.getElementById('paginationContainer');
+        const paginationList = document.getElementById('paginationList');
+
+        // ⭐ CONFIGURACIÓN DE PAGINACIÓN ⭐
+        const ITEMS_PER_PAGE = 20;
+        let currentPage = 1;
+        let allProducts = [];
+
+        // Leemos parámetros de la URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const q = urlParams.get('q') || '';
+        const cat = urlParams.get('cat') || '';
+
+        // Construimos la URL del API
+        let apiUrl = `/api/productos`;
+        if (q) apiUrl += `?q=${encodeURIComponent(q)}`;
+        if (cat) apiUrl += `${q ? '&' : '?'}cat=${cat}`;
+
+        // ⭐ LLAMADA ASÍNCRONA ⭐
+        fetch(apiUrl)
+            .then(response => response.json())
+            .then(productos => {
+                setTimeout(() => {
+                    skeleton.style.display = 'none';
+
+                    if (productos.length === 0) {
+                        emptyState.style.display = 'block';
+                        return;
+                    }
+
+                    allProducts = productos;
+                    renderPage(1);
+                }, 1500);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                skeleton.style.display = 'none';
+                emptyState.style.display = 'block';
+            });
+
+        // ⭐ FUNCIÓN QUE PINTA UNA PÁGINA ESPECÍFICA ⭐
+        function renderPage(page) {
+            currentPage = page;
+
+            const start = (page - 1) * ITEMS_PER_PAGE;
+            const end = start + ITEMS_PER_PAGE;
+            const productosPagina = allProducts.slice(start, end);
+
+            let html = '';
+            productosPagina.forEach(p => {
+                const imagen = p.imagenUrl ? `<img src="${p.imagenUrl}" alt="${p.nombre}">` : `<div class="product-img-placeholder"><i class="bi bi-image"></i></div>`;
+                const categoria = p.categoria ? `<span class="product-category-badge">${p.categoria.nombre}</span>` : '';
+                const precio = p.precio.toFixed(2);
+
+                // ⭐ LÓGICA DEL BOTÓN (CORREGIDA) ⭐
+                let botonHTML = '';
+
+                if (!usuarioLogueado) {
+                    // Si NO está logueado
+                    botonHTML = `
+                        <button class="btn-add-cart btn-login-required" type="button" disabled>
+                            <i class="bi bi-lock"></i> Inicia sesión
+                        </button>
+                    `;
+                } else if (p.stock <= 0) {
+                    // Si está logueado pero NO hay stock
+                    botonHTML = `
+                        <button class="btn-add-cart btn-stock-out" type="button" disabled>
+                            <i class="bi bi-x-circle"></i> Sin stock
+                        </button>
+                    `;
+                } else {
+                    // Si está logueado y HAY stock
+                    botonHTML = `
+                        <form action="/carrito/agregar" method="post" style="width:100%;">
+                            <input type="hidden" name="idProducto" value="${p.idProducto}">
+                            <input type="hidden" name="cantidad" value="1">
+                            <button class="btn-add-cart btn-stock-ok" type="submit">
+                                <i class="bi bi-cart-plus"></i> Agregar al carrito
+                            </button>
+                        </form>
+                    `;
+                }
+
+                html += `
+                    <div class="product-card">
+                        <div class="product-img">${imagen}</div>
+                        <div class="product-body">
+                            ${categoria}
+                            <h3 class="product-name">${p.nombre}</h3>
+                            <p class="product-desc">${p.descripcion || ''}</p>
+                            <div class="product-price"><span>S/ ${precio}</span></div>
+                            ${botonHTML}
+                        </div>
+                    </div>
+                `;
+            });
+            grid.innerHTML = html;
+            grid.style.display = 'grid';
+
+            // Restauramos la vista (grid o lista) según lo que esté activo
+            const activeViewBtn = document.querySelector('.view-btn.active');
+            if (activeViewBtn && activeViewBtn.dataset.view === 'list') {
+                grid.classList.add('list-view');
+            } else {
+                grid.classList.remove('list-view');
+            }
+
+            productsCount.innerHTML = `Mostrando <strong>${productosPagina.length}</strong> de ${allProducts.length} productos`;
+
+            renderPagination();
+        }
+
+        // ⭐ FUNCIÓN QUE PINTA LOS BOTONES DE PAGINACIÓN ⭐
+        function renderPagination() {
+            const totalPages = Math.ceil(allProducts.length / ITEMS_PER_PAGE);
+
+            if (totalPages <= 1) {
+                paginationContainer.style.display = 'none';
+                return;
+            }
+            paginationContainer.style.display = 'block';
+
+            let paginationHTML = '';
+
+            paginationHTML += `
+                <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+                    <a class="page-link" href="#" onclick="changePage(event, ${currentPage - 1})">Anterior</a>
+                </li>
+            `;
+
+            for (let i = 1; i <= totalPages; i++) {
+                if (i === 1 || i === totalPages || (i >= currentPage - 2 && i <= currentPage + 2)) {
+                    paginationHTML += `
+                        <li class="page-item ${currentPage === i ? 'active' : ''}">
+                            <a class="page-link" href="#" onclick="changePage(event, ${i})">${i}</a>
+                        </li>
+                    `;
+                } else if (i === currentPage - 3 || i === currentPage + 3) {
+                    paginationHTML += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
+                }
+            }
+
+            paginationHTML += `
+                <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+                    <a class="page-link" href="#" onclick="changePage(event, ${currentPage + 1})">Siguiente</a>
+                </li>
+            `;
+
+            paginationList.innerHTML = paginationHTML;
+        }
+
+        // ⭐ FUNCIÓN GLOBAL PARA CAMBIAR DE PÁGINA ⭐
+        window.changePage = function(event, page) {
+            event.preventDefault();
+            const totalPages = Math.ceil(allProducts.length / ITEMS_PER_PAGE);
+            if (page < 1 || page > totalPages) return;
+
+            renderPage(page);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        // --- Lógica de filtros ---
         document.querySelectorAll('.filter-group-title').forEach(function (title) {
             title.addEventListener('click', function () {
                 const groupId = this.dataset.toggle;
@@ -243,85 +358,22 @@
         if (closeBtn) closeBtn.addEventListener('click', closeSidebar);
         if (overlay) overlay.addEventListener('click', closeSidebar);
 
+        // ⭐ LÓGICA DE VISTA (GRID / LISTA) CORREGIDA ⭐
         document.querySelectorAll('.view-btn').forEach(function (btn) {
             btn.addEventListener('click', function () {
                 document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
                 this.classList.add('active');
-                const grid = document.querySelector('.products-grid-page');
-                if (!grid) return;
+
+                const gridElement = document.getElementById('productsGrid');
+                if (!gridElement) return;
+
                 if (this.dataset.view === 'list') {
-                    grid.classList.add('list-view');
+                    gridElement.classList.add('list-view');
                 } else {
-                    grid.classList.remove('list-view');
+                    gridElement.classList.remove('list-view');
                 }
             });
         });
-
-        const sortBy = document.getElementById('sortBy');
-        if (sortBy) {
-            sortBy.addEventListener('change', function () {
-                const grid = document.getElementById('productsGrid');
-                if (!grid) return;
-
-                const cards = Array.from(grid.querySelectorAll('.product-card'));
-                const criterio = this.value;
-
-                cards.sort(function (a, b) {
-                    const nombreA = a.querySelector('.product-name').textContent.trim().toLowerCase();
-                    const nombreB = b.querySelector('.product-name').textContent.trim().toLowerCase();
-                    const precioA = parseFloat(a.querySelector('.product-price span').textContent.replace('S/', '').trim());
-                    const precioB = parseFloat(b.querySelector('.product-price span').textContent.replace('S/', '').trim());
-
-                    switch (criterio) {
-                        case 'precio-asc': return precioA - precioB;
-                        case 'precio-desc': return precioB - precioA;
-                        case 'nombre-asc': return nombreA.localeCompare(nombreB);
-                        case 'nombre-desc': return nombreB.localeCompare(nombreA);
-                        default: return 0;
-                    }
-                });
-
-                cards.forEach(card => grid.appendChild(card));
-            });
-        }
-        function actualizarChips() {
-            const chipsContainer = document.getElementById('activeFilters');
-            if (!chipsContainer) return;
-
-            const chips = [];
-
-            document.querySelectorAll('.filter-check input[type="checkbox"]:checked').forEach(function (cb) {
-                const label = cb.closest('.filter-check').querySelector('span').textContent;
-                chips.push(label);
-            });
-
-            if (chips.length === 0) {
-                chipsContainer.style.display = 'none';
-                chipsContainer.innerHTML = '';
-                return;
-            }
-
-            chipsContainer.style.display = 'flex';
-            chipsContainer.innerHTML = chips.map(function (text) {
-                return '<span class="active-filter-chip">' + text +
-                    ' <button type="button" aria-label="Quitar filtro"><i class="bi bi-x-lg"></i></button></span>';
-            }).join('');
-
-            chipsContainer.querySelectorAll('button').forEach(function (btn, i) {
-                btn.addEventListener('click', function () {
-                    const allChecked = document.querySelectorAll('.filter-check input[type="checkbox"]:checked');
-                    if (allChecked[i]) {
-                        allChecked[i].checked = false;
-                        actualizarChips();
-                    }
-                });
-            });
-        }
-
-        document.querySelectorAll('.filter-check input[type="checkbox"]').forEach(function (cb) {
-            cb.addEventListener('change', actualizarChips);
-        });
-
     });
 </script>
 </body>

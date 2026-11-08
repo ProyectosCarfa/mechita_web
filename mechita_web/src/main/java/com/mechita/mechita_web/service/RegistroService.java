@@ -20,6 +20,7 @@ public class RegistroService {
 
     @Transactional
     public Cliente registrarCliente(Usuario usuario, Cliente cliente, Direccion direccion) {
+        // La contraseña ya viene encriptada desde el AuthController
         Usuario guardado = usuarioRepository.save(usuario);
         cliente.setUsuario(guardado);
         Cliente clienteGuardado = clienteRepository.save(cliente);

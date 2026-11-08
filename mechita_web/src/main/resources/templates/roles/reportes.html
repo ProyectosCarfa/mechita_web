@@ -1,10 +1,276 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reportes y Estadísticas - Admin Mechita</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+
+    <style>
+        .kpi-card {
+            background: var(--mechita-white);
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid var(--mechita-border);
+            border-left: 5px solid var(--mechita-brown);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            height: 100%;
+            transition: var(--transition);
+        }
+        .kpi-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+        .kpi-icon { width: 50px; height: 50px; border-radius: 50%; background: var(--mechita-beige); color: var(--mechita-brown); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0; }
+        .kpi-label { font-size: 0.75rem; color: var(--mechita-text-soft); text-transform: uppercase; font-weight: 600; margin-bottom: 2px; }
+        .kpi-value { font-size: 1.5rem; font-weight: 800; color: var(--mechita-black); font-family: 'Poppins', sans-serif; line-height: 1; }
+        .chart-container { background: var(--mechita-white); border-radius: 20px; padding: 1.5rem; border: 1px solid var(--mechita-border); box-shadow: var(--shadow-sm); position: relative; height: 350px; width: 100%; }
+    </style>
 </head>
 <body>
 
+<div th:replace="~{fragments/navbar :: topbar}"></div>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<section class="admin-page-header">
+    <div class="container">
+        <div class="admin-breadcrumb">
+            <a th:href="@{/admin}"><i class="bi bi-house-door"></i> Panel</a>
+            <i class="bi bi-chevron-right"></i>
+            <span>Reportes</span>
+        </div>
+        <div class="admin-page-title">
+            <div>
+                <span class="admin-tag">ESTADÍSTICAS</span>
+                <h1>Dashboard General</h1>
+                <p>Resumen de rendimiento y métricas reales del negocio</p>
+            </div>
+            <div class="admin-page-actions">
+                <button onclick="exportarExcel()" class="btn-admin-secondary" style="background: #16A34A; color: white; border: none;">
+                    <i class="bi bi-file-earmark-excel"></i> Exportar Excel
+                </button>
+                <button onclick="exportarPDF()" class="btn-admin-secondary" style="background: #DC2626; color: white; border: none;">
+                    <i class="bi bi-file-earmark-pdf"></i> Exportar PDF
+                </button>
+                <a th:href="@{/admin}" class="btn-admin-back">
+                    <i class="bi bi-arrow-left"></i> Volver
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div id="dashboard-content" style="background: var(--mechita-cream); padding-bottom: 3rem;">
+
+    <section class="admin-toolbar-section">
+        <div class="container">
+            <div class="row g-3 mb-3">
+                <div class="col-lg-3 col-md-6">
+                    <div class="kpi-card">
+                        <div class="kpi-icon"><i class="bi bi-cash-stack"></i></div>
+                        <div>
+                            <div class="kpi-label">Ingresos Totales</div>
+                            <div class="kpi-value" th:text="'S/ ' + ${totalRecaudado != null ? #numbers.formatDecimal(totalRecaudado, 1, 2) : '0.00'}">S/ 0.00</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="kpi-card" style="border-left-color: #16A34A;">
+                        <div class="kpi-icon" style="background: #F0FDF4; color: #16A34A;"><i class="bi bi-bag-check"></i></div>
+                        <div>
+                            <div class="kpi-label">Pedidos Totales</div>
+                            <div class="kpi-value" th:text="${totalPedidos != null ? totalPedidos : 0}">0</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="kpi-card" style="border-left-color: #D4A574;">
+                        <div class="kpi-icon" style="background: #FBF1E2; color: #D4A574;"><i class="bi bi-people"></i></div>
+                        <div>
+                            <div class="kpi-label">Clientes Registrados</div>
+                            <div class="kpi-value" th:text="${totalClientes != null ? totalClientes : 0}">0</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="kpi-card" style="border-left-color: #2563EB;">
+                        <div class="kpi-icon" style="background: #EFF6FF; color: #2563EB;"><i class="bi bi-box-seam"></i></div>
+                        <div>
+                            <div class="kpi-label">Productos en Catálogo</div>
+                            <div class="kpi-value" th:text="${totalProductos != null ? totalProductos : 0}">0</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-3">
+                <div class="col-lg-4 col-md-6">
+                    <div class="kpi-card" style="border-left-color: #DC2626;">
+                        <div class="kpi-icon" style="background: #FEF2F2; color: #DC2626;"><i class="bi bi-exclamation-triangle"></i></div>
+                        <div>
+                            <div class="kpi-label">Productos con Stock Bajo</div>
+                            <div class="kpi-value" th:text="${stockBajo != null ? stockBajo : 0}">0</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="container pb-4">
+        <div class="row g-4">
+            <div class="col-lg-8">
+                <div class="chart-container">
+                    <h5 class="mb-3" style="font-family: 'Playfair Display', serif; font-weight: 800;">Ventas Mensuales (S/)</h5>
+                    <canvas id="ventasChart"></canvas>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="chart-container">
+                    <h5 class="mb-3" style="font-family: 'Playfair Display', serif; font-weight: 800;">Métodos de Pago</h5>
+                    <canvas id="metodosChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="container pb-4">
+        <div class="admin-table-wrapper">
+            <div class="p-3 border-bottom">
+                <h5 class="mb-0" style="font-family: 'Playfair Display', serif; font-weight: 800;">Top 5 Productos Más Vendidos</h5>
+            </div>
+            <table class="admin-table">
+                <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th class="text-end">Unidades Vendidas</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="prod : ${topProductos}">
+                    <td class="fw-bold" th:text="${prod.key}">Producto</td>
+                    <td class="text-end"><span class="id-badge" th:text="${prod.value}">0</span></td>
+                </tr>
+                <tr th:if="${topProductos == null or topProductos.isEmpty()}">
+                    <td colspan="2" class="text-center text-muted py-3">Aún no hay ventas registradas.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+</div>
+
+<table id="tabla-exportacion" style="display: none;">
+    <thead>
+    <tr>
+        <th>Métrica / KPI</th>
+        <th>Valor</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr><td>Ingresos Totales</td><td th:text="'S/ ' + ${totalRecaudado != null ? #numbers.formatDecimal(totalRecaudado, 1, 2) : '0.00'}">S/ 0.00</td></tr>
+    <tr><td>Pedidos Totales</td><td th:text="${totalPedidos}">0</td></tr>
+    <tr><td>Clientes Registrados</td><td th:text="${totalClientes}">0</td></tr>
+    <tr><td>Productos en Catálogo</td><td th:text="${totalProductos}">0</td></tr>
+    <tr><td>Productos con Stock Bajo</td><td th:text="${stockBajo}">0</td></tr>
+    </tbody>
+</table>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+<script th:inline="javascript">
+    document.addEventListener('DOMContentLoaded', function () {
+        const vLabels = /*[[${ventasLabels}]]*/ [];
+        const vData = /*[[${ventasData}]]*/ [];
+        const mLabels = /*[[${metodosLabels}]]*/ [];
+        const mData = /*[[${metodosData}]]*/ [];
+
+        const canvasVentas = document.getElementById('ventasChart');
+        if (canvasVentas) {
+            new Chart(canvasVentas.getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: vLabels.length > 0 ? vLabels : ['Sin datos'],
+                    datasets: [{
+                        label: 'Ventas (S/)',
+                        data: vData.length > 0 ? vData : [0],
+                        backgroundColor: 'rgba(160, 82, 45, 0.7)',
+                        borderColor: 'rgba(160, 82, 45, 1)',
+                        borderWidth: 1,
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        const canvasMetodos = document.getElementById('metodosChart');
+        if (canvasMetodos) {
+            new Chart(canvasMetodos.getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    labels: mLabels.length > 0 ? mLabels : ['Sin datos'],
+                    datasets: [{
+                        data: mData.length > 0 ? mData : [1],
+                        backgroundColor: mLabels.length > 0 ? ['#A0522D', '#D4A574', '#6B7A3D', '#1A1A1A'] : ['#e0e0e0'],
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '70%',
+                    plugins: {
+                        legend: { position: 'bottom', labels: { boxWidth: 12, padding: 20, font: { family: 'Inter' } } }
+                    }
+                }
+            });
+        }
+    });
+
+    function exportarPDF() {
+        const element = document.getElementById('dashboard-content');
+        const opt = {
+            margin:       0.5,
+            filename:     'Reporte_Mechita_' + new Date().toISOString().slice(0,10) + '.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2, useCORS: true },
+            jsPDF:        { unit: 'in', format: 'letter', orientation: 'landscape' }
+        };
+
+        const btn = document.querySelector('button[onclick="exportarPDF()"]');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="bi bi-hourglass-split"></i> Generando...';
+        btn.disabled = true;
+
+        html2pdf().set(opt).from(element).save().then(() => {
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        });
+    }
+
+    function exportarExcel() {
+        const table = document.getElementById('tabla-exportacion');
+        const wb = XLSX.utils.table_to_book(table, { sheet: "KPIs Mechita" });
+        XLSX.writeFile(wb, 'Reporte_KPIs_' + new Date().toISOString().slice(0,10) + '.xlsx');
+    }
+</script>
 </body>
 </html>

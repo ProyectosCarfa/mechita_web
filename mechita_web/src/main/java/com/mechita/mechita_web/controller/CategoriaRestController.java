@@ -4,13 +4,17 @@ import com.mechita.mechita_web.exception.RecursoNoEncontradoException;
 import com.mechita.mechita_web.exception.ReglaNegocioException;
 import com.mechita.mechita_web.model.Categoria;
 import com.mechita.mechita_web.service.CategoriaService;
+import com.mechita.mechita_web.service.ProductoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/categorias")
@@ -18,13 +22,33 @@ import java.util.List;
 public class CategoriaRestController {
 
     private final CategoriaService service;
+    private final ProductoService productoService;
 
     @GetMapping
-    public List<Categoria> listar(@RequestParam(required = false) Boolean activo) {
+    public List<Map<String, Object>> listar(@RequestParam(required = false) Boolean activo) {
+        List<Categoria> categorias;
+
         if (activo == null) {
-            return service.listar();
+            categorias = service.listar();
+        } else if (activo) {
+            categorias = service.listarActivas();
+        } else {
+            categorias = service.listarInactivas();
         }
-        return activo ? service.listarActivas() : service.listarInactivas();
+
+        return categorias.stream().map(c -> {
+            Map<String, Object> map = new HashMap<>();
+            map.put("idCategoria", c.getIdCategoria());
+            map.put("nombre", c.getNombre());
+            map.put("descripcion", c.getDescripcion());
+            map.put("imagenUrl", c.getImagenUrl());
+            map.put("activo", c.getActivo());
+
+            // ⭐ CONTEO DIRECTO Y SEGURO ⭐
+            map.put("cantidadProductos", productoService.contarPorCategoria(c.getIdCategoria()));
+
+            return map;
+        }).collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")

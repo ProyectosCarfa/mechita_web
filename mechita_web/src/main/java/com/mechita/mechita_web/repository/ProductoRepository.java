@@ -1,6 +1,8 @@
 package com.mechita.mechita_web.repository;
 
 import com.mechita.mechita_web.model.Producto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -10,16 +12,13 @@ import java.util.List;
 public interface ProductoRepository extends JpaRepository<Producto, Long> {
 
     List<Producto> findByActivo(Boolean activo);
-
     List<Producto> findByCategoria_IdCategoria(Long idCategoria);
-
     List<Producto> findByCategoria_IdCategoriaAndActivo(Long idCategoria, Boolean activo);
-
     List<Producto> findByNombreContainingIgnoreCase(String nombre);
-
     List<Producto> findByStockLessThan(Integer stock);
-
     long countByActivo(Boolean activo);
-
     long countByCategoria_IdCategoriaAndActivo(Long idCategoria, Boolean activo);
+    Page<Producto> findByActivo(boolean activo, Pageable pageable);
+    Page<Producto> findByCategoria_IdCategoriaAndActivo(Long idCategoria, boolean activo, Pageable pageable);
+    Page<Producto> findByNombreContainingIgnoreCaseAndActivo(String nombre, boolean activo, Pageable pageable);
 }

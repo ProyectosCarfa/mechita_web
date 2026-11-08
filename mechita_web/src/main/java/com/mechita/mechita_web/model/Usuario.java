@@ -53,6 +53,6 @@ public class Usuario {
     private Cliente cliente;
 
     public boolean esAdmin() {
-        return rol != null && "ADMIN".equalsIgnoreCase(rol.getNombre());
+        return rol != null && "ROLE_ADMIN".equalsIgnoreCase(rol.getNombre());
     }
 }

@@ -80,6 +80,14 @@
 			<artifactId>spring-boot-starter-webmvc-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.thymeleaf.extras</groupId>
+			<artifactId>thymeleaf-extras-springsecurity6</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -94,10 +102,12 @@
 							<artifactId>lombok</artifactId>
 						</exclude>
 					</excludes>
+					<!-- ⭐ CONFIGURACIÓN PARA RECARGA RÁPIDA -->
 					<jvmArguments>
 						-Dspring.devtools.restart.enabled=true
 						-Dspring.devtools.livereload.enabled=true
 					</jvmArguments>
+					<addResources>true</addResources>
 				</configuration>
 			</plugin>
 			<plugin>

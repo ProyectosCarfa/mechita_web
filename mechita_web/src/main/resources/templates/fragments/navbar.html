@@ -4,7 +4,6 @@
 
 <div th:fragment="topbar" class="topbar-mechita">
   <div class="topbar-inner">
-
     <div class="topbar-left">
       <span><i class="bi bi-geo-alt-fill"></i> Piura, Perú</span>
       <span class="topbar-divider">|</span>
@@ -14,11 +13,10 @@
     <div class="topbar-right">
       <span>Síguenos:</span>
       <div class="topbar-social">
-        <a href="https://facebook.com" target="_blank" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
-        <a href="https://instagram.com" target="_blank" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
-        <a href="https://tiktok.com" target="_blank" aria-label="TikTok"><i class="bi bi-tiktok"></i></a>
+        <a href="https://facebook.com" target="_blank"><i class="bi bi-facebook"></i></a>
+        <a href="https://instagram.com" target="_blank"><i class="bi bi-instagram"></i></a>
+        <a href="https://tiktok.com" target="_blank"><i class="bi bi-tiktok"></i></a>
       </div>
-
       <span class="topbar-divider">|</span>
 
       <div th:if="${session.usuarioLogueado == null}" style="display: inline-flex; align-items: center; gap: 6px;">
@@ -36,113 +34,97 @@
           <i class="bi bi-person-circle"></i>
           <span th:text="${session.usuarioLogueado.correo}">usuario@correo.com</span>
         </span>
-
-        <a th:if="${session.usuarioLogueado.rol != null and session.usuarioLogueado.rol.nombre == 'ADMIN'}"
-           th:href="@{/admin}"
-           style="color: var(--mechita-gold); text-decoration: none; font-weight: 600;"
-           title="Panel de administración">
+        <a th:if="${session.usuarioLogueado.rol != null and session.usuarioLogueado.rol.nombre == 'ROLE_ADMIN'}"
+           th:href="@{/admin}" style="color: var(--mechita-gold); text-decoration: none; font-weight: 600;">
           <i class="bi bi-shield-lock-fill"></i> Admin
         </a>
-
-        <a th:href="@{/logout}" style="color: rgba(255,255,255,0.7); text-decoration: none;" title="Cerrar sesión">
+        <!-- Volvemos a usar los atributos nativos de Bootstrap -->
+        <a href="#" data-bs-toggle="modal" data-bs-target="#logoutModal" style="color: rgba(255,255,255,0.7); text-decoration: none;">
           <i class="bi bi-box-arrow-right"></i> Salir
         </a>
       </div>
-
     </div>
-
   </div>
 </div>
 
-<nav th:fragment="navbar" id="mainNavbar" class="navbar navbar-expand-lg navbar-mechita">
-  <div class="container navbar-container">
+<!-- ⚠️ USAMOS th:block PARA QUE EL NAV Y EL MODAL SE INYECTEN JUNTOS -->
+<th:block th:fragment="navbar">
+  <nav id="mainNavbar" class="navbar navbar-expand-lg navbar-mechita">
+    <div class="container navbar-container">
+      <a class="navbar-brand" th:href="@{/}">
+        <img th:src="@{/assets/img/logo.png}" alt="Mechita" class="logo-img">
+        <div class="brand-info">
+          <span class="brand-line-1">Productos Piuranos</span>
+          <span class="brand-line-2">MECHITA E.I.R.L</span>
+          <span class="brand-line-3">Tradición que se comparte</span>
+        </div>
+      </a>
 
-    <a class="navbar-brand" th:href="@{/}">
-      <img th:src="@{/assets/img/logo.png}"
-           alt="Productos Piuranos Mechita"
-           class="logo-img">
-      <div class="brand-info">
-        <span class="brand-line-1">Productos Piuranos</span>
-        <span class="brand-line-2">MECHITA E.I.R.L</span>
-        <span class="brand-line-3">Tradición que se comparte</span>
-      </div>
-    </a>
-
-    <button class="navbar-toggler ms-auto" type="button"
-            data-bs-toggle="collapse" data-bs-target="#navMenu"
-            aria-controls="navMenu" aria-expanded="false" aria-label="Menú">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <div class="collapse navbar-collapse" id="navMenu">
-
-      <ul class="navbar-nav navbar-nav-main">
-        <li class="nav-item"><a class="nav-link nav-link-mechita active" th:href="@{/}">Inicio</a></li>
-        <li class="nav-item"><a class="nav-link nav-link-mechita" th:href="@{/productos}">Productos</a></li>
-        <li class="nav-item"><a class="nav-link nav-link-mechita" th:href="@{/categorias}">Categorías</a></li>
-        <li class="nav-item"><a class="nav-link nav-link-mechita" th:href="@{/nosotros}">Nosotros</a></li>
-        <li class="nav-item"><a class="nav-link nav-link-mechita" th:href="@{/contacto}">Contacto</a></li>
-      </ul>
-
-      <form class="navbar-search" role="search" th:action="@{/productos}" method="get">
-        <input type="search" name="q" placeholder="Buscar productos..." aria-label="Buscar">
-        <button type="submit" aria-label="Buscar">
-          <i class="bi bi-search"></i>
-        </button>
-      </form>
-
-      <div class="d-flex align-items-center gap-2">
-        <a class="cart-icon" th:href="@{/carrito}" aria-label="Carrito">
+      <div class="d-flex align-items-center gap-2 ms-auto order-lg-last">
+        <a class="cart-icon" th:href="@{/carrito}">
           <i class="bi bi-cart3"></i>
           <span class="badge-carrito" th:text="${session.carritoCantidad != null ? session.carritoCantidad : 0}">0</span>
         </a>
 
         <div class="dropdown" th:if="${session.usuarioLogueado != null}">
-          <button class="btn btn-link p-0 text-decoration-none" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="color: var(--mechita-brown); font-size: 1.4rem; margin-left: 5px;">
+          <button class="btn btn-link p-0 text-decoration-none" type="button" data-bs-toggle="dropdown" style="color: var(--mechita-brown); font-size: 1.4rem;">
             <i class="bi bi-person-gear"></i>
           </button>
-          <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0" style="border-radius: 12px; margin-top: 10px;">
-
+          <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
+            <li><a class="dropdown-item" th:href="@{/perfil}">Mi Perfil</a></li>
             <li>
-              <h6 class="dropdown-header text-truncate" style="max-width: 200px;" th:text="${session.usuarioLogueado.correo}">
-                correo@ejemplo.com
-              </h6>
-            </li>
-            <li><hr class="dropdown-divider"></li>
-
-            <li>
-              <a class="dropdown-item" th:href="@{/perfil}">
-                <i class="bi bi-person me-2" style="color: var(--mechita-brown);"></i> Mi Perfil
+              <!-- Atributos nativos de Bootstrap -->
+              <a class="dropdown-item text-danger" href="#" data-bs-toggle="modal" data-bs-target="#logoutModal">
+                Cerrar Sesión
               </a>
             </li>
-
-            <li th:if="${session.usuarioLogueado.rol != null and session.usuarioLogueado.rol.nombre == 'CLIENTE'}">
-              <a class="dropdown-item" th:href="@{/mis-compras}">
-                <i class="bi bi-bag-check me-2" style="color: var(--mechita-brown);"></i> Mis Compras
-              </a>
-            </li>
-
-            <li th:if="${session.usuarioLogueado.rol != null and session.usuarioLogueado.rol.nombre == 'ADMIN'}">
-              <a class="dropdown-item" th:href="@{/admin}">
-                <i class="bi bi-shield-lock me-2" style="color: var(--mechita-brown);"></i> Panel de Admin
-              </a>
-            </li>
-
-            <li><hr class="dropdown-divider"></li>
-
-            <li>
-              <a class="dropdown-item text-danger" th:href="@{/logout}">
-                <i class="bi bi-box-arrow-right me-2"></i> Cerrar Sesión
-              </a>
-            </li>
-
           </ul>
         </div>
       </div>
 
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navMenu">
+        <ul class="navbar-nav navbar-nav-main">
+          <li class="nav-item"><a class="nav-link nav-link-mechita" id="link-inicio" th:href="@{/}">Inicio</a></li>
+          <li class="nav-item"><a class="nav-link nav-link-mechita" id="link-productos" th:href="@{/productos}">Productos</a></li>
+          <li class="nav-item"><a class="nav-link nav-link-mechita" id="link-categorias" th:href="@{/categorias}">Categorías</a></li>
+          <li class="nav-item"><a class="nav-link nav-link-mechita" id="link-nosotros" th:href="@{/nosotros}">Nosotros</a></li>
+          <li class="nav-item"><a class="nav-link nav-link-mechita" id="link-contacto" th:href="@{/contacto}">Contacto</a></li>
+        </ul>
+
+        <form class="navbar-search d-none d-lg-flex ms-auto" role="search" th:action="@{/productos}" method="get">
+          <input type="search" name="q" placeholder="Buscar productos...">
+          <button type="submit"><i class="bi bi-search"></i></button>
+        </form>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MODAL DE LOGOUT (Ahora sí se inyectará) -->
+  <div class="modal fade" id="logoutModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+      <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+        <div class="modal-body text-center p-4">
+          <div class="mb-3">
+            <i class="bi bi-exclamation-circle text-danger" style="font-size: 3rem;"></i>
+          </div>
+          <h5 class="mb-2 fw-bold">¿Cerrar Sesión?</h5>
+          <p class="text-muted small mb-4">¿Estás seguro que deseas salir? Podrás seguir comprando cuando vuelvas.</p>
+          <div class="d-flex gap-2 justify-content-center">
+            <button type="button" class="btn btn-light px-4" data-bs-dismiss="modal">Seguir comprando</button>
+
+            <form th:action="@{/logout}" method="post" class="m-0">
+              <button type="submit" class="btn btn-danger px-4">Sí, salir</button>
+            </form>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-</nav>
+</th:block>
 
 </body>
 </html>

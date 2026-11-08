@@ -7,14 +7,15 @@ import com.mechita.mechita_web.model.Rol;
 import com.mechita.mechita_web.model.Usuario;
 import com.mechita.mechita_web.repository.ClienteRepository;
 import com.mechita.mechita_web.repository.DistritoRepository;
+import com.mechita.mechita_web.repository.RolRepository;
 import com.mechita.mechita_web.service.CarritoService;
 import com.mechita.mechita_web.service.RegistroService;
 import com.mechita.mechita_web.service.RolService;
 import com.mechita.mechita_web.service.UsuarioService;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -48,51 +49,15 @@ public class AuthController {
     @Autowired
     private CarritoService carritoService;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private RolRepository rolRepository;
+
     @GetMapping("/login")
     public String mostrarLogin() {
         return "login";
-    }
-
-    @PostMapping("/login")
-    public String procesarLogin(
-            @RequestParam String email,
-            @RequestParam String password,
-            Model model,
-            HttpSession session) {
-
-        Optional<Usuario> usuarioOpt = service.buscarPorCorreo(email);
-
-        if (usuarioOpt.isEmpty()) {
-            model.addAttribute("error", "Correo o contraseña incorrectos");
-            return "login";
-        }
-
-        Usuario u = usuarioOpt.get();
-
-        if (!u.getContrasena().equals(password)) {
-            model.addAttribute("error", "Correo o contraseña incorrectos");
-            return "login";
-        }
-
-        if (!u.getActivo()) {
-            model.addAttribute("error", "Tu cuenta está desactivada");
-            return "login";
-        }
-
-        session.setAttribute("usuarioLogueado", u);
-        clienteRepository.findByUsuario(u).ifPresent(c ->
-                session.setAttribute("carritoCantidad", carritoService.contarUnidades(c)));
-
-        if (u.esAdmin()) {
-            return "redirect:/admin";
-        }
-        return "redirect:/";
-    }
-
-    @GetMapping("/logout")
-    public String logout(HttpSession session) {
-        session.invalidate();
-        return "redirect:/";
     }
 
     @GetMapping("/registro")
@@ -132,9 +97,12 @@ public class AuthController {
             return errorRegistro(model, "Ese correo ya está registrado");
         }
 
-        Optional<Rol> rolCliente = rolService.buscarPorNombre("CLIENTE");
+        Optional<Rol> rolCliente = rolService.buscarPorNombre("ROLE_CLIENTE")
+                .or(() -> rolRepository.findById(2L))
+                .or(() -> rolService.buscarPorNombre("CLIENTE"));
+
         if (rolCliente.isEmpty()) {
-            return errorRegistro(model, "Error interno: rol CLIENTE no existe");
+            return errorRegistro(model, "Error interno: No se encontró el rol de CLIENTE");
         }
 
         Optional<Distrito> distrito = distritoRepository.findById(idDistrito);
@@ -145,7 +113,7 @@ public class AuthController {
         Usuario nuevo = new Usuario();
         nuevo.setRol(rolCliente.get());
         nuevo.setCorreo(email);
-        nuevo.setContrasena(password);
+        nuevo.setContrasena(passwordEncoder.encode(password));
         nuevo.setActivo(true);
 
         Cliente nuevoCliente = new Cliente();

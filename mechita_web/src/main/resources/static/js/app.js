@@ -1,4 +1,3 @@
-
 document.addEventListener('DOMContentLoaded', function () {
     const navbar = document.getElementById('mainNavbar');
     function handleNavbarScroll() {
@@ -76,6 +75,25 @@ document.addEventListener('DOMContentLoaded', function () {
         }, 6000);
     }
 
+});
+
+// ==========================================
+// SOLUCIÓN AL ERROR DEL BACKDROP DE BOOTSTRAP
+// ==========================================
+// Escuchamos cuando el modal está a punto de abrirse
+document.addEventListener('show.bs.modal', function (event) {
+    // Si el modal que se abre es el de logout
+    if (event.target.id === 'logoutModal') {
+        // Buscamos si hay un menú desplegable abierto
+        const dropdownToggle = document.querySelector('[data-bs-toggle="dropdown"].show');
+        if (dropdownToggle) {
+            // Lo cerramos instantáneamente antes de que el modal se dibuje
+            const dropdownInstance = bootstrap.Dropdown.getInstance(dropdownToggle);
+            if (dropdownInstance) {
+                dropdownInstance.hide();
+            }
+        }
+    }
 });
 
 

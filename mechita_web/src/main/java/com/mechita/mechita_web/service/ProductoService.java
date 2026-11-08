@@ -3,21 +3,19 @@ package com.mechita.mechita_web.service;
 import com.mechita.mechita_web.model.Producto;
 import com.mechita.mechita_web.repository.ProductoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-
 @Service
 public class ProductoService {
-
     @Autowired
     private ProductoRepository repo;
-
     public List<Producto> listar() {
         return repo.findAll();
     }
-
     public Optional<Producto> buscarPorId(Long id) {
         return repo.findById(id);
     }
@@ -67,5 +65,16 @@ public class ProductoService {
 
     public long contarPorCategoria(Long idCategoria) {
         return repo.countByCategoria_IdCategoriaAndActivo(idCategoria, true);
+    }
+    public Page<Producto> listarActivosPaginado(Pageable pageable) {
+        return repo.findByActivo(true, pageable);
+    }
+
+    public Page<Producto> listarPorCategoriaPaginado(Long idCategoria, Pageable pageable) {
+        return repo.findByCategoria_IdCategoriaAndActivo(idCategoria, true, pageable);
+    }
+
+    public Page<Producto> buscarPorNombrePaginado(String nombre, Pageable pageable) {
+        return repo.findByNombreContainingIgnoreCaseAndActivo(nombre, true, pageable);
     }
 }
